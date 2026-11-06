@@ -23,13 +23,6 @@ export default function Important({
     <section className="panel" style={{ '--glow': 'var(--glow-home)' } as React.CSSProperties}>
       <div className="panel-head">
         <h2 className="eyebrow">Important today</h2>
-        <span className="meta">
-          {new Date().toLocaleDateString(undefined, {
-            weekday: 'long',
-            day: 'numeric',
-            month: 'long'
-          })}
-        </span>
       </div>
       <div className="metrics">
         <Metric

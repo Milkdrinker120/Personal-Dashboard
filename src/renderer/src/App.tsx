@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { Notice, Priority } from '../../main/notices'
-import { Moon, Sun } from './widgets/Icons'
 import Important from './widgets/Important'
-import NavMenu, { type NavItem } from './widgets/NavMenu'
+import Sidebar, { type NavItem } from './widgets/Sidebar'
 import Notices, { isOverdue } from './widgets/Notices'
 import Metric from './widgets/Metric'
 import Page from './widgets/Page'
@@ -109,35 +108,50 @@ export default function App(): React.JSX.Element {
   }
   const title = PAGES.find((p) => p.id === page)?.label ?? 'Home'
 
-  return (
-    <div className="page">
-      <header className="topbar">
-        <NavMenu items={PAGES} current={page} onSelect={go} />
-        <h1>{page === 'home' ? 'Personal Dashboard' : title}</h1>
-        <div className="spacer" />
-        <button className="btn" onClick={toggleTheme}>
-          {theme === 'light' ? <Moon /> : <Sun />}
-          {theme === 'light' ? 'Dark' : 'Light'}
-        </button>
-      </header>
+  const hour = new Date().getHours()
+  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'
+  const dateLabel = new Date().toLocaleDateString(undefined, {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long'
+  })
 
-      {page === 'home' && <Important notices={notices} onPatch={patch} onJump={go} />}
-      {SECTIONS.filter((s) => page === 'home' || page === s.id).map((s) => (
-        <Page
-          key={s.id}
-          title={s.label}
-          summary={summaries[s.id]}
-          glow={s.id}
-          metrics={metricsFor(s.id)}
-          onOpen={page === 'home' ? () => go(s.id) : undefined}
-        >
-          {s.id === 'notices' ? (
-            <Notices notices={notices} onAdd={add} onPatch={patch} onDelete={remove} />
-          ) : (
-            <div className="placeholder">{placeholders[s.id]}</div>
-          )}
-        </Page>
-      ))}
+  return (
+    <div className="shell">
+      <Sidebar
+        items={PAGES}
+        current={page}
+        onSelect={go}
+        badges={{ notices: openCount }}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+      />
+      <main className="main">
+        <header className="pagehead">
+          <h1>{page === 'home' ? greeting : title}</h1>
+          {page === 'home' && <p className="meta">{dateLabel}</p>}
+        </header>
+
+        {page === 'home' && <Important notices={notices} onPatch={patch} onJump={go} />}
+        <div className={page === 'home' ? 'grid' : undefined}>
+          {SECTIONS.filter((s) => page === 'home' || page === s.id).map((s) => (
+            <Page
+              key={s.id}
+              title={s.label}
+              summary={summaries[s.id]}
+              glow={s.id}
+              metrics={metricsFor(s.id)}
+              onOpen={page === 'home' ? () => go(s.id) : undefined}
+            >
+              {s.id === 'notices' ? (
+                <Notices notices={notices} onAdd={add} onPatch={patch} onDelete={remove} />
+              ) : (
+                <div className="placeholder">{placeholders[s.id]}</div>
+              )}
+            </Page>
+          ))}
+        </div>
+      </main>
     </div>
   )
 }

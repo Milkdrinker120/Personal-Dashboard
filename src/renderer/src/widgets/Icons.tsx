@@ -62,3 +62,30 @@ export const Menu = (p: P): React.JSX.Element => (
     <path d="M4 6h16M4 12h16M4 18h16" />
   </Svg>
 )
+export const Home = (p: P): React.JSX.Element => (
+  <Svg {...p}>
+    <path d="M3 11 12 3l9 8M5 10v10h5v-6h4v6h5V10" />
+  </Svg>
+)
+export const Bell = (p: P): React.JSX.Element => (
+  <Svg {...p}>
+    <path d="M6 9a6 6 0 1 1 12 0c0 6 2 7 2 7H4s2-1 2-7M10 20a2 2 0 0 0 4 0" />
+  </Svg>
+)
+export const Calendar = (p: P): React.JSX.Element => (
+  <Svg {...p}>
+    <rect x="3" y="5" width="18" height="16" rx="2" />
+    <path d="M3 10h18M8 3v4M16 3v4" />
+  </Svg>
+)
+export const Mail = (p: P): React.JSX.Element => (
+  <Svg {...p}>
+    <rect x="3" y="5" width="18" height="14" rx="2" />
+    <path d="m3 7 9 6 9-6" />
+  </Svg>
+)
+export const Chart = (p: P): React.JSX.Element => (
+  <Svg {...p}>
+    <path d="M3 3v18h18M7 15l4-5 3 3 5-7" />
+  </Svg>
+)
