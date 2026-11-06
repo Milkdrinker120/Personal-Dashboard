@@ -489,3 +489,221 @@ button.icon.on {
 .panel .notice {
   border-top-color: color-mix(in srgb, var(--glow, var(--border)) 30%, var(--border));
 }
+
+/* ---------- polish layer ---------- */
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --ring: 0 0 0 1px rgb(0 0 0 / 0.08);
+  --lift: 0 1px 2px rgb(0 0 0 / 0.04), 0 4px 16px rgb(0 0 0 / 0.04);
+}
+
+:root[data-theme='dark'] {
+  --ring: 0 0 0 1px rgb(255 255 255 / 0.08);
+  --lift: 0 1px 2px rgb(0 0 0 / 0.5), 0 8px 24px rgb(0 0 0 / 0.35);
+}
+
+body {
+  font-family: 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+.metric-value {
+  letter-spacing: -0.02em;
+}
+
+.topbar h1 {
+  font-size: 19px;
+  font-weight: 650;
+}
+
+/* soft ring instead of a hard solid border */
+.important,
+.section,
+.nav-menu {
+  border-color: transparent;
+  border-radius: var(--radius);
+  box-shadow: var(--ring), var(--lift);
+}
+
+.nav-menu {
+  z-index: 20;
+  transform-origin: top left;
+  transition:
+    opacity 150ms var(--ease-out),
+    transform 150ms var(--ease-out);
+
+  @starting-style {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+.topbar {
+  background: color-mix(in srgb, var(--bg) 80%, transparent);
+  backdrop-filter: blur(12px) saturate(1.4);
+  border-bottom-color: color-mix(in srgb, var(--border) 60%, transparent);
+}
+
+/* controls */
+input,
+select,
+button.btn {
+  border-color: transparent;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--ring);
+  transition:
+    background-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms var(--ease-out);
+}
+
+input:focus-visible,
+select:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--focus);
+}
+
+button.btn.primary {
+  box-shadow: none;
+}
+
+button.btn:active,
+button.icon:active,
+.nav-item:active,
+.metric:active,
+.section-head:active {
+  transform: scale(0.97);
+}
+
+button.btn,
+button.icon,
+.nav-item,
+.metric,
+.section-head {
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease,
+    border-color 160ms ease,
+    transform 160ms var(--ease-out);
+}
+
+.section-head:active {
+  transform: none; /* full-width row: scaling it looks wrong */
+}
+
+/* hover only where hover exists */
+button.btn:hover,
+.metric:hover {
+  border-color: transparent;
+}
+@media (hover: none) {
+  button.icon:hover,
+  .nav-item:hover {
+    background: none;
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  button.btn:hover {
+    background: color-mix(in srgb, var(--text) 8%, var(--surface-2));
+  }
+  button.btn.primary:hover {
+    background: color-mix(in srgb, var(--accent) 88%, white);
+  }
+  .section-head:hover {
+    background: color-mix(in srgb, var(--text) 4%, transparent);
+  }
+}
+
+/* metric tiles */
+.metric {
+  border-radius: 10px;
+  box-shadow: var(--ring);
+  border-color: transparent;
+}
+.metric.bad {
+  box-shadow: 0 0 0 1px var(--danger);
+  border-color: transparent;
+}
+.panel .metric:hover {
+  border-color: transparent;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--glow) 70%, transparent);
+}
+.metric-value {
+  font-weight: 650;
+}
+.meta {
+  letter-spacing: 0.01em;
+}
+
+/* panels: glow kept, but quieter and softer-edged */
+.panel {
+  border-radius: 16px;
+  border-color: transparent;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--glow, transparent) 30%, transparent),
+    0 12px 40px -12px color-mix(in srgb, var(--glow, transparent) 35%, transparent);
+  animation: reveal 220ms var(--ease-out);
+}
+
+/* notices */
+.notice {
+  border-top-color: color-mix(in srgb, var(--border) 70%, transparent);
+  border-left-width: 2px;
+  transition: opacity 160ms ease;
+}
+.eyebrow,
+.section-title {
+  letter-spacing: 0.08em;
+  font-size: 12px;
+}
+.tag {
+  letter-spacing: 0.06em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel,
+  .section-body {
+    animation: none;
+  }
+  .nav-menu {
+    transition: opacity 150ms ease;
+  }
+  button.btn:active,
+  button.icon:active,
+  .nav-item:active,
+  .metric:active {
+    transform: none;
+  }
+}
+
+/* ---------- bolder, larger titles ---------- */
+.topbar h1 {
+  font-size: 24px;
+  font-weight: 750;
+}
+.eyebrow,
+.section-title {
+  font-size: 15px;
+  font-weight: 750;
+}
+.panel .eyebrow {
+  font-size: 17px;
+}
+.metric-value {
+  font-weight: 750;
+}
+.panel .metric-value {
+  font-size: 34px;
+}
+.metric-value {
+  font-size: 26px;
+}
+.panel .metric .meta,
+.metric .meta {
+  font-weight: 600;
+}
