@@ -937,3 +937,51 @@ button.btn,
 .sidebar .nav-item.current {
   font-weight: 600;
 }
+
+/* ---------- inbox ---------- */
+.setup p {
+  margin: 0 0 var(--s3);
+  color: var(--muted);
+  max-width: 70ch;
+}
+.error {
+  margin-bottom: var(--s3);
+  padding: var(--s2) var(--s3);
+  border-radius: var(--radius-sm);
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+.mail {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: 4px 0;
+  border-top: 1px solid color-mix(in srgb, var(--glow, var(--border)) 25%, var(--border));
+}
+.mail-body {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(90px, 180px) 1fr;
+  gap: var(--s3);
+  color: inherit;
+  text-decoration: none;
+}
+.mail-from,
+.mail-subject {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.mail.unread .mail-from,
+.mail.unread .mail-subject {
+  font-weight: 700;
+}
+.mail-date {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.icon-spacer {
+  width: 32px;
+  flex-shrink: 0;
+}

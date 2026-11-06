@@ -89,3 +89,8 @@ export const Chart = (p: P): React.JSX.Element => (
     <path d="M3 3v18h18M7 15l4-5 3 3 5-7" />
   </Svg>
 )
+export const Check = (p: P): React.JSX.Element => (
+  <Svg {...p}>
+    <path d="m5 12 5 5 9-10" />
+  </Svg>
+)

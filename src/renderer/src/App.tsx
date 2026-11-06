@@ -3,7 +3,9 @@ import type { Notice, Priority } from '../../main/notices'
 import Important from './widgets/Important'
 import Sidebar, { type NavItem } from './widgets/Sidebar'
 import Notices, { isOverdue } from './widgets/Notices'
+import Inbox from './widgets/Inbox'
 import Metric from './widgets/Metric'
+import { useGmail } from './useGmail'
 import Page from './widgets/Page'
 
 const PAGES: NavItem[] = [
@@ -11,7 +13,7 @@ const PAGES: NavItem[] = [
   { id: 'notices', label: 'Notices' },
   { id: 'calendar', label: 'Calendar' },
   { id: 'inbox', label: 'Inbox' },
-  { id: 'stocks', label: 'Stocks' }
+  { id: 'stocks', label: 'Reselling revenue' }
 ]
 
 const SECTIONS = PAGES.filter((p) => p.id !== 'home')
@@ -29,6 +31,8 @@ export default function App(): React.JSX.Element {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark')
   const [notices, setNotices] = useState<Notice[]>([])
   const [page, setPage] = useState(readPage)
+  const gmail = useGmail()
+  const counts = gmail.inbox?.counts
 
   const refresh = useCallback(async () => setNotices(await window.api.notices.list()), [])
 
@@ -73,13 +77,13 @@ export default function App(): React.JSX.Element {
   const summaries: Record<string, string> = {
     notices: `${openCount} open`,
     calendar: 'iCloud not connected',
-    inbox: 'Gmail not connected',
+    inbox: counts ? `${counts.unread} unread` : 'Gmail not connected',
     stocks: 'No Excel file chosen'
   }
   const placeholders: Record<string, string> = {
     calendar: 'Calendar events will appear here.',
     inbox: 'Connect Gmail to see recent mail.',
-    stocks: 'Choose your Excel stock file to see holdings.'
+    stocks: 'Choose your Excel sales file to see your reselling revenue.'
   }
   const openNotices = notices.filter((n) => !n.done)
   const m = (
@@ -103,8 +107,12 @@ export default function App(): React.JSX.Element {
     if (id === 'calendar')
       return [m('Today', '–', id), m('Tomorrow', '–', id), m('This week', '–', id)]
     if (id === 'inbox')
-      return [m('Unread', '–', id), m('Starred', '–', id), m('Important', '–', id)]
-    return [m('Portfolio value', '–', id), m('Day change', '–', id), m('Holdings', '–', id)]
+      return [
+        m('Unread', counts?.unread ?? '–', id),
+        m('Starred', counts?.starred ?? '–', id),
+        m('Important', counts?.important ?? '–', id)
+      ]
+    return [m('Total revenue', '–', id), m('This month', '–', id), m('Items sold', '–', id)]
   }
   const title = PAGES.find((p) => p.id === page)?.label ?? 'Home'
 
@@ -132,7 +140,9 @@ export default function App(): React.JSX.Element {
           {page === 'home' && <p className="meta">{dateLabel}</p>}
         </header>
 
-        {page === 'home' && <Important notices={notices} onPatch={patch} onJump={go} />}
+        {page === 'home' && (
+          <Important notices={notices} onPatch={patch} onJump={go} unread={counts?.unread} />
+        )}
         <div className={page === 'home' ? 'grid' : undefined}>
           {SECTIONS.filter((s) => page === 'home' || page === s.id).map((s) => (
             <Page
@@ -145,6 +155,8 @@ export default function App(): React.JSX.Element {
             >
               {s.id === 'notices' ? (
                 <Notices notices={notices} onAdd={add} onPatch={patch} onDelete={remove} />
+              ) : s.id === 'inbox' ? (
+                <Inbox g={gmail} />
               ) : (
                 <div className="placeholder">{placeholders[s.id]}</div>
               )}

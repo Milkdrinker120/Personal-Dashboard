@@ -17,7 +17,8 @@ export interface Notice {
 export type NoticeInput = Partial<Omit<Notice, 'id' | 'createdAt'>> & { title: string }
 
 let store: JsonStore<{ notices: Notice[] }>
-const db = (): JsonStore<{ notices: Notice[] }> => (store ??= new JsonStore('notices', { notices: [] }))
+const db = (): JsonStore<{ notices: Notice[] }> =>
+  (store ??= new JsonStore('notices', { notices: [] }))
 
 export function listNotices(): Notice[] {
   return db().get('notices')

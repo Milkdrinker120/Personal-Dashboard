@@ -4,6 +4,13 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { getSettings } from './store'
 import {
+  connect as gmailConnect,
+  disconnect as gmailDisconnect,
+  listInbox,
+  modifyLabels,
+  saveCredentials
+} from './gmail'
+import {
   addNotice,
   deleteNotice,
   listNotices,
@@ -71,6 +78,7 @@ app.whenReady().then(() => {
     return {
       xlsxPath: s.get('xlsxPath'),
       googleClientId: s.get('googleClientId'),
+      googleHasSecret: !!s.get('googleClientSecretEnc'),
       googleConnected: !!s.get('googleTokensEnc'),
       icloudUser: s.get('icloudUser'),
       icloudConnected: !!s.get('icloudPasswordEnc'),
@@ -80,6 +88,17 @@ app.whenReady().then(() => {
   ipcMain.handle('settings:setTheme', (_, theme: 'light' | 'dark') =>
     getSettings().set('theme', theme)
   )
+
+  ipcMain.handle('gmail:saveCredentials', (_, id: string, secret: string) =>
+    saveCredentials(id, secret)
+  )
+  ipcMain.handle('gmail:connect', () => gmailConnect())
+  ipcMain.handle('gmail:disconnect', () => gmailDisconnect())
+  ipcMain.handle('gmail:inbox', () => listInbox())
+  ipcMain.handle('gmail:setStar', (_, id: string, on: boolean) =>
+    on ? modifyLabels(id, ['STARRED'], []) : modifyLabels(id, [], ['STARRED'])
+  )
+  ipcMain.handle('gmail:markRead', (_, id: string) => modifyLabels(id, [], ['UNREAD']))
 
   createWindow()
 

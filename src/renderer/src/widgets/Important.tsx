@@ -5,11 +5,13 @@ import { isOverdue, NoticeRow, sortNotices, today } from './Notices'
 export default function Important({
   notices,
   onPatch,
-  onJump
+  onJump,
+  unread
 }: {
   notices: Notice[]
   onPatch: (id: string, p: Partial<Notice>) => void
   onJump: (id: string) => void
+  unread?: number
 }): React.JSX.Element {
   const open = notices.filter((n) => !n.done)
   const overdue = open.filter(isOverdue)
@@ -35,8 +37,8 @@ export default function Important({
         <Metric label="Due today" value={dueToday.length} target="notices" onJump={onJump} />
         <Metric label="Open notices" value={open.length} target="notices" onJump={onJump} />
         <Metric label="Events today" value="–" target="calendar" onJump={onJump} />
-        <Metric label="Unread email" value="–" target="inbox" onJump={onJump} />
-        <Metric label="Portfolio" value="–" target="stocks" onJump={onJump} />
+        <Metric label="Unread email" value={unread ?? '–'} target="inbox" onJump={onJump} />
+        <Metric label="Revenue" value="–" target="stocks" onJump={onJump} />
       </div>
       <div className="notice-cols">
         {attention.length === 0 && <div className="placeholder">Nothing urgent today.</div>}

@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import type { Notice, NoticeInput } from '../main/notices'
+import type { InboxData } from '../main/gmail'
 
 const api = {
   notices: {
@@ -9,6 +10,16 @@ const api = {
     update: (id: string, patch: Partial<Notice>): Promise<Notice | null> =>
       ipcRenderer.invoke('notices:update', id, patch),
     remove: (id: string): Promise<void> => ipcRenderer.invoke('notices:delete', id)
+  },
+  gmail: {
+    saveCredentials: (id: string, secret: string): Promise<void> =>
+      ipcRenderer.invoke('gmail:saveCredentials', id, secret),
+    connect: (): Promise<void> => ipcRenderer.invoke('gmail:connect'),
+    disconnect: (): Promise<void> => ipcRenderer.invoke('gmail:disconnect'),
+    inbox: (): Promise<InboxData> => ipcRenderer.invoke('gmail:inbox'),
+    setStar: (id: string, on: boolean): Promise<void> =>
+      ipcRenderer.invoke('gmail:setStar', id, on),
+    markRead: (id: string): Promise<void> => ipcRenderer.invoke('gmail:markRead', id)
   },
   settings: {
     get: (): Promise<PublicSettings> => ipcRenderer.invoke('settings:get'),
@@ -20,6 +31,7 @@ const api = {
 export interface PublicSettings {
   xlsxPath: string
   googleClientId: string
+  googleHasSecret: boolean
   googleConnected: boolean
   icloudUser: string
   icloudConnected: boolean
