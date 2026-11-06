@@ -58,7 +58,7 @@ export function getSettings(): JsonStore<Settings> {
     googleTokensEnc: '',
     icloudUser: '',
     icloudPasswordEnc: '',
-    theme: 'light'
+    theme: 'dark'
   })
   return settings
 }

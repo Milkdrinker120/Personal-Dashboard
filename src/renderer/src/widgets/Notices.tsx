@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { Notice, Priority } from '../../../main/notices'
+import { Pin, Trash } from './Icons'
 
 const rank: Record<Priority, number> = { high: 0, medium: 1, low: 2 }
 
@@ -27,28 +28,42 @@ export function NoticeRow({
   onDelete?: (id: string) => void
 }): React.JSX.Element {
   return (
-    <div className={`notice ${n.done ? 'done' : ''}`}>
-      <input type="checkbox" checked={n.done} onChange={() => onPatch(n.id, { done: !n.done })} />
-      <span className={`dot ${n.priority}`} />
+    <div className={`notice ${n.priority} ${n.done ? 'done' : ''}`}>
+      <input
+        type="checkbox"
+        checked={n.done}
+        aria-label={`Mark "${n.title}" done`}
+        onChange={() => onPatch(n.id, { done: !n.done })}
+      />
       <div className="body">
         <div className="title">{n.title}</div>
-        {n.due && (
-          <div className={`meta ${isOverdue(n) ? 'overdue' : ''}`}>
-            Due {n.due}
-            {isOverdue(n) && ' (overdue)'}
-          </div>
-        )}
+        <div className="meta">
+          <span className={`tag ${n.priority}`}>{n.priority}</span>
+          {n.due && (
+            <span className={isOverdue(n) ? 'overdue' : ''}>
+              {' · '}Due {n.due}
+              {isOverdue(n) && ' (overdue)'}
+            </span>
+          )}
+        </div>
       </div>
       <button
-        className="icon"
+        className={`icon ${n.pinned ? 'on' : ''}`}
         title={n.pinned ? 'Unpin' : 'Pin'}
+        aria-label={n.pinned ? 'Unpin notice' : 'Pin notice'}
+        aria-pressed={n.pinned}
         onClick={() => onPatch(n.id, { pinned: !n.pinned })}
       >
-        {n.pinned ? '★' : '☆'}
+        <Pin filled={n.pinned} />
       </button>
       {onDelete && (
-        <button className="icon" title="Delete" onClick={() => onDelete(n.id)}>
-          ✕
+        <button
+          className="icon"
+          title="Delete"
+          aria-label="Delete notice"
+          onClick={() => onDelete(n.id)}
+        >
+          <Trash />
         </button>
       )}
     </div>

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import type { Notice, Priority } from '../../main/notices'
 import Important from './widgets/Important'
 import Notices from './widgets/Notices'
+import { Moon, Sun } from './widgets/Icons'
 import Section from './widgets/Section'
 
 const SECTIONS = [
@@ -12,7 +13,7 @@ const SECTIONS = [
 ]
 
 export default function App(): React.JSX.Element {
-  const [theme, setTheme] = useState<'light' | 'dark'>('light')
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark')
   const [notices, setNotices] = useState<Notice[]>([])
 
   const refresh = useCallback(async () => setNotices(await window.api.notices.list()), [])
@@ -45,7 +46,11 @@ export default function App(): React.JSX.Element {
   }
 
   const jump = (id: string): void => {
-    document.getElementById(`section-${id}`)?.scrollIntoView({ behavior: 'smooth' })
+    window.dispatchEvent(new CustomEvent('section:open', { detail: id }))
+    // wait a frame so the section has expanded before scrolling
+    requestAnimationFrame(() =>
+      document.getElementById(`section-${id}`)?.scrollIntoView({ behavior: 'smooth' })
+    )
   }
 
   const openCount = notices.filter((n) => !n.done).length
@@ -68,11 +73,12 @@ export default function App(): React.JSX.Element {
           ))}
         </select>
         <button className="btn" onClick={toggleTheme}>
+          {theme === 'light' ? <Moon /> : <Sun />}
           {theme === 'light' ? 'Dark' : 'Light'}
         </button>
       </header>
 
-      <Important notices={notices} onPatch={patch} />
+      <Important notices={notices} onPatch={patch} onJump={jump} />
 
       <Section id="notices" title="Notices" summary={`${openCount} open`}>
         <Notices notices={notices} onAdd={add} onPatch={patch} onDelete={remove} />
