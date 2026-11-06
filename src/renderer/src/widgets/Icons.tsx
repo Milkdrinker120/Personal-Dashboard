@@ -57,3 +57,8 @@ export const Alert = (p: P): React.JSX.Element => (
     <path d="M12 3 2 20h20zM12 10v5M12 18v.01" />
   </Svg>
 )
+export const Menu = (p: P): React.JSX.Element => (
+  <Svg {...p}>
+    <path d="M4 6h16M4 12h16M4 18h16" />
+  </Svg>
+)

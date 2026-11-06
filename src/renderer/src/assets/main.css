@@ -12,6 +12,11 @@
   --ok: #1f7a4d;
   --danger-bg: #fdecec;
   --focus: #2457d6;
+  --glow-home: #2457d6;
+  --glow-notices: #c77700;
+  --glow-calendar: #7c4dd6;
+  --glow-inbox: #0e84b8;
+  --glow-stocks: #0f8f7e;
   --s1: 4px;
   --s2: 8px;
   --s3: 12px;
@@ -21,10 +26,10 @@
 }
 
 :root[data-theme='dark'] {
-  --bg: #0f1115;
-  --surface: #171a20;
-  --surface-2: #1f232b;
-  --border: #2a2f38;
+  --bg: #000000;
+  --surface: #0a0b0e;
+  --surface-2: #14161b;
+  --border: #1d2027;
   --text: #e9ebef;
   --muted: #9aa3b0;
   --accent: #7aa2ff;
@@ -32,7 +37,12 @@
   --danger: #ff7b7b;
   --warn: #f0b04a;
   --ok: #4ccf8f;
-  --danger-bg: #2c1a1c;
+  --danger-bg: #2a1214;
+  --glow-home: #5b8cff;
+  --glow-notices: #ffb020;
+  --glow-calendar: #a78bfa;
+  --glow-inbox: #38bdf8;
+  --glow-stocks: #2dd4bf;
   --focus: #7aa2ff;
   color-scheme: dark;
 }
@@ -352,4 +362,130 @@ button.icon.on {
 .num {
   font-variant-numeric: tabular-nums;
   text-align: right;
+}
+
+/* ---------- nav menu + pages ---------- */
+.nav {
+  position: relative;
+}
+
+.nav-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 180px;
+  padding: var(--s1);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-item {
+  min-height: 36px;
+  padding: 6px 12px;
+  text-align: left;
+  font: inherit;
+  color: var(--text);
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.nav-item:hover {
+  background: var(--surface-2);
+}
+
+.nav-item.current {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: var(--s4) var(--s5) var(--s5);
+  margin-bottom: var(--s5);
+  min-height: 220px;
+  border-color: color-mix(in srgb, var(--glow, var(--border)) 55%, var(--border));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--glow, transparent) 25%, transparent),
+    0 0 28px color-mix(in srgb, var(--glow, transparent) 22%, transparent);
+}
+
+.panel-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s3);
+  margin-bottom: var(--s3);
+}
+
+.panel-open {
+  margin-left: auto;
+  min-height: 28px;
+  padding: 2px 8px;
+  font-size: 12px;
+}
+
+/* larger metric tiles inside panels */
+.panel .metrics {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--s3);
+  margin-bottom: var(--s4);
+}
+
+.panel .metric {
+  padding: var(--s3) var(--s4);
+}
+
+.panel .metric-value {
+  font-size: 30px;
+}
+
+.panel .metric .meta {
+  font-size: 13px;
+}
+
+.panel .metric:hover {
+  border-color: var(--glow);
+}
+
+.panel .eyebrow {
+  color: var(--glow);
+}
+
+.panel .notice {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+/* ---------- tinted panel backgrounds ---------- */
+:root {
+  --tint: 8%;
+  --tint-strong: 14%;
+}
+
+:root[data-theme='dark'] {
+  --tint: 13%;
+  --tint-strong: 22%;
+}
+
+.panel {
+  background: color-mix(in srgb, var(--glow, transparent) var(--tint), var(--surface));
+}
+
+.panel .metric:not(.bad) {
+  background: color-mix(in srgb, var(--glow, transparent) var(--tint-strong), var(--surface));
+}
+
+.panel input,
+.panel select {
+  background: color-mix(in srgb, var(--glow, transparent) 8%, var(--surface-2));
+}
+
+.panel .notice {
+  border-top-color: color-mix(in srgb, var(--glow, var(--border)) 30%, var(--border));
 }

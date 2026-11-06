@@ -1,34 +1,6 @@
 import type { Notice } from '../../../main/notices'
-import { Alert } from './Icons'
+import Metric from './Metric'
 import { isOverdue, NoticeRow, sortNotices, today } from './Notices'
-
-function Metric({
-  label,
-  value,
-  target,
-  onJump,
-  bad
-}: {
-  label: string
-  value: string | number
-  target: string
-  onJump: (id: string) => void
-  bad?: boolean
-}): React.JSX.Element {
-  return (
-    <button
-      className={`metric ${bad ? 'bad' : ''}`}
-      onClick={() => onJump(target)}
-      aria-label={`${label}: ${value}. Go to ${target}`}
-    >
-      <div className="metric-value">
-        {bad && <Alert size={18} />}
-        {value}
-      </div>
-      <div className="meta">{label}</div>
-    </button>
-  )
-}
 
 export default function Important({
   notices,
@@ -48,8 +20,8 @@ export default function Important({
   )
 
   return (
-    <section className="important">
-      <div className="important-head">
+    <section className="panel" style={{ '--glow': 'var(--glow-home)' } as React.CSSProperties}>
+      <div className="panel-head">
         <h2 className="eyebrow">Important today</h2>
         <span className="meta">
           {new Date().toLocaleDateString(undefined, {
